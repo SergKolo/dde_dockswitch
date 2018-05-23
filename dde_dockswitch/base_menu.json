@@ -1,0 +1,8 @@
+{
+    "Exit": {
+        "icon": "exit",
+        "type": "Gtk.ImageMenuItem",
+        "action": "Gtk.main_quit"
+    }
+}
+

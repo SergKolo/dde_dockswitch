@@ -1,4 +1,17 @@
 {
+    "Separator": {
+        "type": "Gtk.SeparatorMenuItem"
+    },
+    "Preferences": {
+        "icon": "settings",
+        "type": "Gtk.ImageMenuItem",
+        "action": "Gtk.main_quit"
+    },
+    "About": {
+        "icon": "info",
+        "type": "Gtk.ImageMenuItem",
+        "action": "Gtk.main_quit"
+    },
     "Exit": {
         "icon": "exit",
         "type": "Gtk.ImageMenuItem",

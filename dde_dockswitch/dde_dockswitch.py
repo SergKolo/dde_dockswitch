@@ -29,6 +29,9 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import Gio
 from gi.repository.Gdk import ScrollDirection
+from collections import OrderedDict
+
+import menu_builder
 
 
 class DeepinDockSwitch(object):
@@ -41,10 +44,6 @@ class DeepinDockSwitch(object):
         self.app.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.make_menu()
         self.app.set_icon("drive-harddisk-symbolik")
-
-#    def quit(self,*args):
-#        """ closes indicator """
-#        Gtk.main_quit()
 
     def run(self):
         """ Launches the indicator """
@@ -59,6 +58,9 @@ class DeepinDockSwitch(object):
     def callback():
         pass
 
+    def no_on(self):
+        pass
+
 
     def make_menu(self, *args):
         """ generates entries in the indicator"""
@@ -67,49 +69,9 @@ class DeepinDockSwitch(object):
                 self.app_menu.remove(item)
         self.app_menu = Gtk.Menu()
 
-
-        with open(os.path.join(os.path.dirname(__file__),'base_menu.json') ) as menu_file:
-             base_menu = json.load(menu_file)
-             for key,val in base_menu.items():
-                 val["type"] = eval(val["type"])
-                 val["action"] = eval(val["action"])
-                 self.add_menu_item(self.app_menu,label=key,**val,args=[None])
-             # Add dymic eval of type and action
-        self.app.set_menu(self.app_menu)
+        menu_builder.build_base_menu(self.app_menu)
         self.app_menu.show_all()
-
-# TODO: edit. alot
-    def add_menu_item(self, menu_obj, type=Gtk.MenuItem,
-                      icon=None, label="HelloWorld", action=None, args=[]):
-        """ dynamic function that can add menu items depending on
-            the item type and other arguments"""
-        #print(label,type,action)
-
-        menu_item = None
-        if type is Gtk.ImageMenuItem and label:
-            menu_item = Gtk.ImageMenuItem.new_with_label(label)
-            menu_item.set_always_show_image(True)
-            if '/' in icon:
-                icon = Gtk.Image.new_from_file(icon)
-            else:
-                icon = Gtk.Image.new_from_icon_name(icon, 48)
-            menu_item.set_image(icon)
-        elif type is Gtk.ImageMenuItem and not label:
-            menu_item = Gtk.ImageMenuItem()
-            menu_item.set_always_show_image(True)
-            if '/' in icon:
-                icon = Gtk.Image.new_from_file(icon)
-            else:
-                icon = Gtk.Image.new_from_icon_name(icon, 16)
-            menu_item.set_image(icon)
-        elif type is Gtk.MenuItem:
-            menu_item = Gtk.MenuItem(label)
-        elif type is Gtk.SeparatorMenuItem:
-            menu_item = Gtk.SeparatorMenuItem()
-        if action:
-            menu_item.connect('activate', action, *args)
-        menu_obj.append(menu_item)
-        menu_obj.show()
+        self.app.set_menu(self.app_menu)
 
 
 

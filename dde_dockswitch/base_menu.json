@@ -10,7 +10,7 @@
     "About": {
         "icon": "info",
         "type": "Gtk.ImageMenuItem",
-        "action": "Gtk.main_quit"
+        "action": "dialogs.show_about"
     },
     "Exit": {
         "icon": "exit",

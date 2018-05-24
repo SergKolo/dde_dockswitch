@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 from collections import OrderedDict
 import os,json
+import dialogs
 
 def add_menu_item(menu_obj, type=Gtk.MenuItem,
                   icon=None, label="HelloWorld", action=None, args=[]):
@@ -44,5 +45,5 @@ def build_base_menu(menu_obj):
                  print("Is Separator")
                  add_menu_item(menu_obj,type=Gtk.SeparatorMenuItem)
                  continue
-             val["action"] = eval(val["action"])
+             val["action"] = eval("self" + val["action"]) if val["action"].startswith(".")else  eval(val["action"])
              add_menu_item(menu_obj,label=key,**val,args=[None])

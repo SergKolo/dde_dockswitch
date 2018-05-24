@@ -31,7 +31,7 @@ from gi.repository import Gio
 from gi.repository.Gdk import ScrollDirection
 from collections import OrderedDict
 
-import menu_builder
+import menu_builder, dialogs
 
 
 class DeepinDockSwitch(object):
@@ -59,6 +59,9 @@ class DeepinDockSwitch(object):
         pass
 
     def no_on(self):
+        pass
+
+    def show_about(self):
         pass
 
 

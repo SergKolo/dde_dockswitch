@@ -31,16 +31,23 @@ from gi.repository import Gio
 from gi.repository.Gdk import ScrollDirection
 from collections import OrderedDict
 
-import menu_builder, dialogs
+import subprocess
+
+import menu_builder, dialogs,config_ctrl,dbus_ctrl,dock_ctrl
 
 
 class DeepinDockSwitch(object):
+
+    all_lists = OrderedDict()
 
     def __init__(self):
         self.app = AppIndicator3.Indicator.new(
             'dde_dock_list', "",
             AppIndicator3.IndicatorCategory.OTHER
         )
+
+        config_file = os.path.join(os.environ["HOME"],".config/dde_dockswitch/docklists.json")
+
         self.app.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.make_menu()
         self.app.set_icon("drive-harddisk-symbolik")
@@ -58,25 +65,50 @@ class DeepinDockSwitch(object):
     def callback():
         pass
 
-    def no_on(self):
-        pass
-
-    def show_about(self):
-        pass
-
-
     def make_menu(self, *args):
         """ generates entries in the indicator"""
+        global all_lists
         if hasattr(self, 'app_menu'):
             for item in self.app_menu.get_children():
                 self.app_menu.remove(item)
         self.app_menu = Gtk.Menu()
 
+        all_lists = config_ctrl.read_config_file()
+
+         
+        menu_builder.add_menu_item(self.app_menu,icon="add",label="Record Currently Docked",action=self.record_currently_docked,args=[])
+
         menu_builder.build_base_menu(self.app_menu)
         self.app_menu.show_all()
         self.app.set_menu(self.app_menu)
 
+    def record_currently_docked(self,*args):
+        global all_lists
+        docked_desk_files = dock_ctrl.get_desk_files(onlydocked=True)
+        name = self.run_cmd(['zenity','--entry', 
+                      '--text',"Name this list",
+                      '--entry-text',"Default entry"]).decode().rstrip()
+        if name:
+            # this probably will have to be global
+            all_lists = {**all_lists,name: docked_desk_files}
+            config_ctrl.write_config_file(all_lists)
+            self.make_menu()
+        
 
+
+    def run_cmd(self, cmdlist):
+        """ utility: reusable function for running external commands """
+        try:
+            stdout = subprocess.check_output(cmdlist)
+        except subprocess.CalledProcessError:
+            # TODO
+            pass
+        else:
+            if stdout:
+                return stdout
+
+
+        
 
 if __name__ == '__main__':
     switch = DeepinDockSwitch()

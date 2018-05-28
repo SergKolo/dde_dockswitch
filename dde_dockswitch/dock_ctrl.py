@@ -1,5 +1,5 @@
 # functions responsible for Deepin dock control
-from . import dbus_ctrl
+import dbus_ctrl
 
 dock_obj = [ "session", "com.deepin.dde.daemon.Dock", 
                 "/com/deepin/dde/daemon/Dock", "com.deepin.dde.daemon.Dock"]

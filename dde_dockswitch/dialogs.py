@@ -7,9 +7,7 @@ def show_about(*args):
     builder.add_from_file(os.path.join( 
             os.path.dirname(__file__),
             'dde_dockswitch_about.glade'  ) )
-
-    handlers = {"onButtonPressed": Gtk.main_quit}
-    builder.connect_signals(handlers)
+    #print([ i.get_children() for i in builder.get_objects() ])
 
     # might be better to get children of the 
     # ButtonBox and actually connect Close button

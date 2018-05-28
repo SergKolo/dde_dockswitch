@@ -2,13 +2,24 @@
 import json,os
 from collections import OrderedDict as od
 
-def read_config_file(conf_file):
-    with open(conf_file) as fd:
-         return od(json.load(fd))
+conf_file = os.path.join(os.environ['HOME'],'.config/dde_dockswitch_config.json')
 
-def write_config_file(conf_file,conf):
+def read_config_file():
+    global conf_file
+    if not os.path.exists(conf_file):
+        return od()
+    with open(conf_file) as fd:
+        try:
+            return od(json.load(fd))
+        except JSONDecodeError:
+           # TODO: how to handle this
+           pass
+
+def write_config_file(conf):
+    global conf_file
     with open(conf_file,"w") as fd:
         json.dump(conf,fd,indent=4,sort_keys=True)
 
-def remove_config_file(conf_file):
+def remove_config_file():
+    global conf_file
     os.unlink(conf_file)

@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 from collections import OrderedDict
 import os,json
+import dbus_ctrl
 import dialogs
 
 def add_menu_item(menu_obj, type=Gtk.MenuItem,
@@ -47,3 +48,4 @@ def build_base_menu(menu_obj):
                  continue
              val["action"] = eval("self" + val["action"]) if val["action"].startswith(".")else  eval(val["action"])
              add_menu_item(menu_obj,label=key,**val,args=[None])
+

@@ -21,11 +21,11 @@ def get_desk_files(onlydocked=True):
         desk_files.append(str(desktop_file))
     return desk_files
 
-def clear_dock():
+def clear_dock(*args):
     """  Undocks all entries. Running appications will still 
          appear but won't be pinned"""
     global dock_obj
-    for desk_file in get_docked_desk_files():
+    for desk_file in get_desk_files():
         dbus_ctrl.call_dbus_method(*dock_obj,"RequestUndock",[desk_file])
 
 def fill_dock(desk_files):

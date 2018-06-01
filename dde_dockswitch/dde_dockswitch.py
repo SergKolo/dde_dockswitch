@@ -75,8 +75,16 @@ class DeepinDockSwitch(object):
 
         all_lists = config_ctrl.read_config_file()
 
+        controls = [
+                     { "label": "Record Currently Docked", "icon": "add", "action": self.record_currently_docked,"args":[] },
+                     {"label": "Clear all","icon": "trash", "action": dock_ctrl.clear_dock, "args": []}]
+
+
+        for i in controls:
+            menu_builder.add_menu_item(self.app_menu,**i)
+
          
-        menu_builder.add_menu_item(self.app_menu,icon="add",label="Record Currently Docked",action=self.record_currently_docked,args=[])
+        #menu_builder.add_menu_item(self.app_menu,icon="add",label="Record Currently Docked",action=self.record_currently_docked,args=[])
 
         menu_builder.build_base_menu(self.app_menu)
         self.app_menu.show_all()

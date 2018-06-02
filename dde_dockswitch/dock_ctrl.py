@@ -28,9 +28,11 @@ def clear_dock(*args):
     for desk_file in get_desk_files():
         dbus_ctrl.call_dbus_method(*dock_obj,"RequestUndock",[desk_file])
 
-def fill_dock(desk_files):
+def fill_dock(ignore,desk_files,append=False):
     """ Fills the dock with Entries as provided by desk_files list,
         in the order they appear on the list"""
     global dock_obj
+    if not append:
+        clear_dock()
     for index,desk_file in enumerate(desk_files):
         dbus_ctrl.call_dbus_method(*dock_obj,"RequestDock",[desk_file,index])

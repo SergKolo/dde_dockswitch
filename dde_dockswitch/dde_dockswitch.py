@@ -65,6 +65,7 @@ class DeepinDockSwitch(object):
     def callback():
         pass
 
+
     def make_menu(self, *args):
         """ generates entries in the indicator"""
         global all_lists
@@ -73,11 +74,30 @@ class DeepinDockSwitch(object):
                 self.app_menu.remove(item)
         self.app_menu = Gtk.Menu()
 
+        def fill_dock_and_update(ignore,fill):
+             dock_ctrl.fill_dock(None,fill)
+             self.make_menu()
+
         all_lists = config_ctrl.read_config_file()
+        for list_label,desk_files in all_lists.items():
+            if desk_files == list(dock_ctrl.get_desk_files()):
+                list_label = "\u2605 " + list_label 
+            item_params={ "label": list_label, 
+                          "action": fill_dock_and_update,
+                          "args": [desk_files]
+            }
+            menu_builder.add_menu_item(self.app_menu,**item_params)
 
         controls = [
-                     { "label": "Record Currently Docked", "icon": "add", "action": self.record_currently_docked,"args":[] },
-                     {"label": "Clear all","icon": "trash", "action": dock_ctrl.clear_dock, "args": []}]
+                     { "label": "Record Currently Docked", 
+                       "icon": "add", 
+                       "action": self.record_currently_docked,
+                       "args":[] },
+                     { "label": "Clear all",
+                       "icon": "trash",
+                       "action": dock_ctrl.clear_dock,
+                       "args": []}
+                   ]
 
 
         for i in controls:

@@ -13,6 +13,7 @@ setup(
     data_files=[
         ('/usr/share/pixmaps',['dde_dockswitch/dde_dockswitch_icon.png']),
         ('/usr/share/applications',['dde_dockswitch/dde_dockswitch.desktop'])
+        ('/usr/lib/python3/dist-packages/dde_dockswitch',['dde_dockswitch/dde_dockswitch_about.glade'])
     ],
     classifiers=[
         'Environment :: X11 Applications :: GTK',

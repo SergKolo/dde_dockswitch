@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=0.1
-Name="Dockswitch"
+Name=Dockswitch
 Exec=/usr/lib/python3/dist-packages/dde_dockswitch/dde_dockswitch.py
 Type=Application
 Icon=/usr/share/pixmaps/dde_dockswitch_icon.png

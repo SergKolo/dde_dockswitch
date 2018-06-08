@@ -1,5 +1,7 @@
 import os
 from gi.repository import Gtk
+import subprocess
+import config_ctrl
 
 def show_about(*args):
     print(args)
@@ -15,4 +17,25 @@ def show_about(*args):
     
     w = builder.get_object("about_dialog")
     response = w.run()
+    print("Response",response)
     w.destroy()
+
+
+def remove_entry_diag(*args):
+
+    dialog = [
+        'zenity', '--list', '--checklist', '--title', 
+        "Select lists to remove", '--column', "", '--column', "Lists",
+    ] 
+    lists = config_ctrl.read_config_file()
+    
+    for i in  lists.keys():
+        dialog.append('FALSE')
+        dialog.append(i)
+
+    out = subprocess.check_output(dialog).decode().strip()
+
+    for list_name in out.split('|'):
+        lists.pop(list_name)
+
+    config_ctrl.write_config_file(lists) 

@@ -8,7 +8,6 @@ def add_menu_item(menu_obj, type=Gtk.MenuItem,
                   icon=None, label="HelloWorld", action=None, args=[]):
     """ dynamic function that can add menu items depending on
         the item type and other arguments"""
-    #print(label,type,action)
 
     menu_item = None
     if type is Gtk.ImageMenuItem and label:
@@ -36,16 +35,37 @@ def add_menu_item(menu_obj, type=Gtk.MenuItem,
     menu_obj.append(menu_item)
     menu_obj.show()
 
+def add_submenu(top_menu, label="HelloWorld",**kwargs):
+    """ utility function for adding submenus"""
+    menuitem = Gtk.MenuItem(label)
+    if kwargs and 'icon' in kwargs.keys():
+        menuitem = Gtk.ImageMenuItem.new_with_label(label)
+        menuitem.set_always_show_image(True)
+        if '/' in kwargs['icon']:
+            icon = Gtk.Image.new_from_file(kwargs['icon'])
+        else:
+            icon = Gtk.Image.new_from_icon_name(kwargs['icon'], 48)
+        menuitem.set_image(icon)
+    submenu = Gtk.Menu()
+    menuitem.set_submenu(submenu)
+    top_menu.append(menuitem)
+    menuitem.show()
+    return submenu
 
 def build_base_menu(menu_obj):
-    with open(os.path.join(os.path.dirname(__file__),'base_menu.json') ) as menu_file:
-         base_menu = json.load(menu_file,object_pairs_hook=OrderedDict)
-         for key,val in base_menu.items():
-             val["type"] = eval(val["type"])
-             if val["type"] is Gtk.SeparatorMenuItem:
-                 print("Is Separator")
-                 add_menu_item(menu_obj,type=Gtk.SeparatorMenuItem)
-                 continue
-             val["action"] = eval("self" + val["action"]) if val["action"].startswith(".")else  eval(val["action"])
-             add_menu_item(menu_obj,label=key,**val,args=[None])
+    controls = add_submenu(menu_obj,label="Indicator Controls")
+    base_menu=OrderedDict([
+        ("About", {
+            "icon": "info",
+            "type": Gtk.ImageMenuItem,
+            "action": dialogs.show_about
+        }),
+        ("Exit",{
+            "icon": "exit",
+            "type": Gtk.ImageMenuItem,
+            "action": Gtk.main_quit
+        })
+    ])
 
+    for key,val in base_menu.items():
+        add_menu_item(controls,label=key,**val,args=[])

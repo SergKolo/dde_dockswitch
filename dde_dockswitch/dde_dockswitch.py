@@ -50,7 +50,13 @@ class DeepinDockSwitch(object):
 
         self.app.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.make_menu()
-        self.app.set_icon("drive-harddisk-symbolik")
+
+        icon = '/usr/share/pixmaps/dde_dockswitch_icon.png'
+        if os.path.exists(icon):
+            self.app.set_icon(icon)
+        else:
+            icon = os.path.join(os.path.dirname(__file__),'dde_dockswitch_icon.png')
+            self.app.set_icon(icon)
 
     def run(self):
         """ Launches the indicator """
@@ -74,9 +80,15 @@ class DeepinDockSwitch(object):
                 self.app_menu.remove(item)
         self.app_menu = Gtk.Menu()
 
+        # Wrappers for menu entries that call refresh on main menu
+
         def fill_dock_and_update(ignore,fill):
              dock_ctrl.fill_dock(None,fill)
              self.make_menu()
+
+        def remove_entry_wrap(ignore):
+            dialogs.remove_entry_diag()
+            self.make_menu()
 
         all_lists = config_ctrl.read_config_file()
         for list_label,desk_files in all_lists.items():
@@ -88,23 +100,37 @@ class DeepinDockSwitch(object):
             }
             menu_builder.add_menu_item(self.app_menu,**item_params)
 
-        controls = [
-                     { "label": "Record Currently Docked", 
-                       "icon": "add", 
-                       "action": self.record_currently_docked,
-                       "args":[] },
-                     { "label": "Clear all",
-                       "icon": "trash",
-                       "action": dock_ctrl.clear_dock,
-                       "args": []}
-                   ]
+        menu_builder.add_menu_item(self.app_menu,type=Gtk.SeparatorMenuItem)
 
+        dock_controls = [
+            { "label": "Save", 
+              "type": Gtk.ImageMenuItem,
+              "icon": "gtk-save", 
+              "action": self.record_currently_docked,
+              "args":[] },
 
-        for i in controls:
-            menu_builder.add_menu_item(self.app_menu,**i)
+            { "label": "Rotate",
+              "type": Gtk.ImageMenuItem,
+              "icon": "object-flip-vertical",
+              "action": dock_ctrl.rotate_dock,
+              "args": []},
 
-         
-        #menu_builder.add_menu_item(self.app_menu,icon="add",label="Record Currently Docked",action=self.record_currently_docked,args=[])
+            { "label": "Remove",
+              "type": Gtk.ImageMenuItem,
+              "icon": "list-remove",
+              "action": remove_entry_wrap,
+              "args": []},
+
+            { "label": "Clear",
+              "type": Gtk.ImageMenuItem,
+              "icon": "user-trash",
+              "action": dock_ctrl.clear_dock,
+              "args": []}
+        ]
+
+        dock_ctrl_submenu = menu_builder.add_submenu(self.app_menu,label="Dock Controls")
+        for i in dock_controls:
+            menu_builder.add_menu_item(dock_ctrl_submenu,**i)
 
         menu_builder.build_base_menu(self.app_menu)
         self.app_menu.show_all()

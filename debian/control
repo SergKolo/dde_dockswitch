@@ -1,0 +1,17 @@
+Source: dde-dockswitch
+Maintainer: Sergiy Kolodyazhnyy <1047481448@qq.com>
+Section: python
+Priority: optional
+Build-Depends: python3-setuptools, python3-all, debhelper (>= 7)
+Standards-Version: 3.9.1
+
+
+
+
+
+Package: python3-dde-dockswitch
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Indicator for Deepin dock for switching between multiple lis
+
+

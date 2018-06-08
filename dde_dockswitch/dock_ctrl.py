@@ -21,6 +21,10 @@ def get_desk_files(onlydocked=True):
         desk_files.append(str(desktop_file))
     return desk_files
 
+def rotate_dock(*args):
+    desk_files = get_desk_files(onlydocked=False)
+    fill_dock(None,reversed(desk_files))
+
 def clear_dock(*args):
     """  Undocks all entries. Running appications will still 
          appear but won't be pinned"""
